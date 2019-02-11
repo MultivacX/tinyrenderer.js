@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Second attempt</title>
+    <script type="text/javascript">
+        const HEIGHT = 100;
+
+        function draw_point(x, y, ctx, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, HEIGHT - y, 1, 1);
+        }
+
+        function line(x0, y0, x1, y1, ctx, color) {
+            for (var x = x0; x <= x1; x++) { 
+                var t = (x - x0) / (x1 - x0); 
+                var y = y0 * (1.0 - t) + y1 * t; 
+                draw_point(x, y, ctx, color);
+            } 
+        }
+
+        function draw() {
+            var canvas = document.getElementById('index');
+            if (canvas.getContext) {
+            	var ctx = canvas.getContext('2d');
+                for (var x = 0; x < 100; ++x) {
+                    for (var y = 0; y < 100; ++y) {
+                    	ctx.fillStyle = 'black';
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+                line(13, 20, 80, 40, ctx, 'white'); 
+                line(20, 13, 40, 80, ctx, 'red'); 
+                line(80, 40, 13, 20, ctx, 'red');
+            }
+        }
+    </script>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body onload="draw();">
+    <canvas id="index" width="100" height="100"></canvas>
+  </body>
+</html>
