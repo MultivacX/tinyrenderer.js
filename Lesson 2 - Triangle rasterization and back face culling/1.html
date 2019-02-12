@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>1</title>
+    <script type="text/javascript">
+        const WIDTH = 200;
+        const HEIGHT = 200;
+
+        function draw_point(x, y, ctx, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, HEIGHT - y, 1, 1);
+        }
+
+        function line(x0, y0, x1, y1, ctx, color) {
+            let steep = false;
+            if (Math.abs(x0 - x1) < Math.abs(y0 - y1)) { // if the line is steep, we transpose the image
+                x0 = [y0, y0 = x0][0]; // swap
+                x1 = [y1, y1 = x1][0]; // swap
+                steep = true;
+            }
+
+            if (x0 > x1) { // make it left−to−right 
+                x0 = [x1, x1 = x0][0]; // swap
+                y0 = [y1, y1 = y0][0]; // swap
+            } 
+
+            let dx = x1 - x0; 
+            let dy = y1 - y0; 
+            let derror2 = Math.abs(dy) * 2; 
+            let error2 = 0; 
+            let y = y0;
+
+            for (let x = x0; x <= x1; x++) { 
+                if (steep) {
+                    draw_point(y, x, ctx, color);
+                } else {
+                    draw_point(x, y, ctx, color);
+                }
+
+                error2 += derror2; 
+                if (error2 > dx) { 
+                    y += (y1>y0?1:-1); 
+                    error2 -= dx*2; 
+                }  
+            } 
+        }
+
+        function triangle(t0, t1, t2, ctx, color) { 
+            line(t0.x, t0.y, t1.x, t1.y, ctx, color); 
+            line(t1.x, t1.y, t2.x, t2.y, ctx, color); 
+            line(t2.x, t2.y, t0.x, t0.y, ctx, color); 
+        }
+
+        function draw() {
+            let canvas = document.getElementById('index');
+            if (canvas.getContext) {
+                let ctx = canvas.getContext('2d');
+                for (let x = 0; x < WIDTH; ++x) {
+                    for (let y = 0; y < HEIGHT; ++y) {
+                        ctx.fillStyle = 'black';
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+                
+                let t0 = [{x:10, y:70}, {x:50, y:160}, {x:70, y:80}]; 
+                let t1 = [{x:180, y:50}, {x:150, y:1}, {x:70, y:180}];
+                let t2 = [{x:180, y:150}, {x:120, y:160}, {x:130, y:180}];
+                triangle(t0[0], t0[1], t0[2], ctx, 'red'); 
+                triangle(t1[0], t1[1], t1[2], ctx, 'white'); 
+                triangle(t2[0], t2[1], t2[2], ctx, 'green');
+            }
+        }
+    </script>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body onload="draw();">
+    <canvas id="index" width="200" height="200"></canvas>
+  </body>
+</html>
